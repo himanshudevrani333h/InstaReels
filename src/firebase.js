@@ -4,12 +4,12 @@ import "firebase/firestore"
 import "firebase/auth"
 import "firebase/storage"
 const firebaseConfig = {
-    apiKey: "AIzaSyBpjBy7o0jQMYI-3ODYyHZMFZoMWLpeJ0k",
-    authDomain: "reels-afe60.firebaseapp.com",
-    projectId: "reels-afe60",
-    storageBucket: "reels-afe60.appspot.com",
-    messagingSenderId: "76191497072",
-    appId: "1:76191497072:web:f26b1e0e88457981d2edb5"
+  apiKey: "AIzaSyBLtgrJpQjFm-QcTQYBFQvXb7lT6mGUA_k",
+  authDomain: "reels-92baf.firebaseapp.com",
+  projectId: "reels-92baf",
+  storageBucket: "reels-92baf.appspot.com",
+  messagingSenderId: "486640919382",
+  appId: "1:486640919382:web:8985e47cea117dba312cf7"
   };
  
   firebase.initializeApp(firebaseConfig);

@@ -29,17 +29,22 @@
   color: black;
   cursor: pointer;
 }
+
 .material-icons-outlined {
   font-size: 4rem;
   color: gray;
+  margin-top: 1rem;
 }
+
 #upload-btn {
   display: none;
 }
+
 .upbtn {
   color: white;
   font-size: 4rem;
 }
+
 label {
   position: fixed;
   bottom: 32px;
@@ -68,6 +73,7 @@ label:hover {
   margin: auto;
   position: relative;
   scroll-snap-align: start;
+  padding: 5px;
 }
 
 .like {
@@ -209,7 +215,7 @@ img {
 
 .likeCount {
   position: absolute;
-  top: 36.5rem;
-  left: 26rem;
+  top: 35.1rem;
+  left: 26.3rem;
   color: white;
 }
