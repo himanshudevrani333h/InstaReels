@@ -2,14 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { AuthContext } from "./AuthProvider";
 import { firestore } from "./firebase";
-
 import "./Profile.css";
 
 let Profile = () => {
   let value = useContext(AuthContext);
   let [totalPosts, setTotalPosts] = useState([""]);
 
-  console.log(value);
 
   useEffect(() => {
     let f = async () => {
@@ -42,7 +40,7 @@ let Profile = () => {
             {totalPosts.map((el) => {
               return (
                 <div className="crd">
-                  <video autoPlay loop muted src={el} />
+                  <video muted="muted" autoPlay="true" src={el} />
                 </div>
               );
             })}

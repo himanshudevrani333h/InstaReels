@@ -1,17 +1,19 @@
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "./AuthProvider";
 import { firestore } from "./firebase";
+
 import "./home.css";
 let VideoCard = (props) => {
   let value = useContext(AuthContext);
-  
-  let [likecount,setlike] = useState();
+
+  let [likecount, setlike] = useState();
   let [cmntbox, setbox] = useState(false);
 
   let [currentUserComment, setCurrentUserComment] = useState("");
   let [allComments, setAllComments] = useState([]);
-  
+
   let [savedlike, setsaved] = useState([]);
+
   useEffect(() => {
     let f = async () => {
       let allCommentId = props.post.comments;
@@ -32,29 +34,51 @@ let VideoCard = (props) => {
   }, [props]);
 
   useEffect(() => {
-     let f = async ()=>{
-       firestore.collection("posts").doc(`${props.post.id}`).onSnapshot((querysnapshot)=>{
-         let  like = querysnapshot.data().likes;
-         console.log(like);
-         setlike(like);
-       });
-      }
-      f();
-    
-  },[]);
+    let f = async () => {
+      firestore
+        .collection("posts")
+        .doc(`${props.post.id}`)
+        .onSnapshot((querysnapshot) => {
+          let like = querysnapshot.data().likes;
+          setlike(like);
+        });
+    };
+    f();
+  }, []);
 
- useEffect(()=>{
-   firestore.collection("users").doc(value.uid).onSnapshot((querysnapshot)=>{
-     let posts = querysnapshot.data().posts;
-    //  if(posts.includes(props.post.id)){
-    //    document.querySelector(".material-icons-outlined.like").classList.add("liked");
-    //  }
-     console.log(posts);
-     setsaved(posts)
-   })
- },[])
- 
- 
+  useEffect(() => {
+    firestore
+      .collection("users")
+      .doc(value.uid)
+      .onSnapshot((querysnapshot) => {
+        let posts = querysnapshot.data().posts;
+        setsaved(posts);
+      });
+  }, []);
+
+  useEffect(() => {
+    let observeConfig = {
+      root: null,
+      rootMargin: "5px",
+      threshold: 1,
+    };
+
+    const myobserver = new IntersectionObserver((elements, observer) => {
+      elements.forEach((el) => {
+        if (el.intersectionRatio !== 1 && !el.target.paused) {
+          el.target.querySelector("video").pause();
+        } else {
+          el.target.querySelector("video").play();
+          el.target.querySelector("video").loop = true;
+        }
+      });
+    }, observeConfig);
+
+    const videoEle = document.querySelectorAll(".video-card");
+    videoEle.forEach((el) => {
+      myobserver.observe(el);
+    });
+  }, []);
 
   return (
     <div className="video-card">
@@ -62,62 +86,58 @@ let VideoCard = (props) => {
         className="video_file"
         src={props.post.url}
         onClick={(e) => {
-          if (!e.currentTarget.paused) {
-            e.currentTarget.pause();
-          } else e.currentTarget.play();
+          if (e.currentTarget.paused) e.currentTarget.play();
+          else e.currentTarget.pause();
         }}
-
-        autoPlay={true}
       />
       <button className="likebtn">
-      
-        <span className="likeCount">{likecount == 0 ? "": likecount}</span>
+        <span className="likeCount">{likecount == 0 ? "" : likecount}</span>
         <span
-          className={savedlike.includes(props.post.id)?"material-icons-outlined like liked":"material-icons-outlined like"}
+          className={
+            savedlike.includes(props.post.id)
+              ? "material-icons-outlined like liked"
+              : "material-icons-outlined like"
+          }
           onClick={(e) => {
-            console.log(e);
             if (e.currentTarget.innerHTML == "favorite_border") {
               e.currentTarget.innerHTML = "favorite";
               e.currentTarget.classList.add("liked");
               likecount += 1;
               firestore.collection("posts").doc(`${props.post.id}`).update({
-                likes:likecount,
-              })
+                likes: likecount,
+              });
               let arr = savedlike;
               if (!arr.includes(props.post.id)) arr.push(props.post.id);
-              console.log(arr);
+
               firestore.collection("users").doc(value.uid).update({
-                posts:arr,
-              })
-              setsaved(arr)         
+                posts: arr,
+              });
+              setsaved(arr);
               setlike(likecount);
-             
             } else {
               e.currentTarget.innerHTML = "favorite_border";
               e.currentTarget.classList.remove("liked");
-              if(likecount -1 >=0){
+              if (likecount - 1 >= 0) {
                 likecount -= 1;
                 firestore.collection("posts").doc(`${props.post.id}`).update({
-                  likes:likecount,
-                })
+                  likes: likecount,
+                });
                 let arr = savedlike;
-                let filteredarr = arr.filter((el)=>{
+                let filteredarr = arr.filter((el) => {
                   return el != props.post.id;
-                })
-                console.log(arr);
+                });
+
                 firestore.collection("users").doc(value.uid).update({
-                  posts:filteredarr,
-                })
-                setsaved(filteredarr)
+                  posts: filteredarr,
+                });
+                setsaved(filteredarr);
                 setlike(likecount);
               }
             }
           }}
         >
-         {savedlike.includes(props.post.id)?"favorite":"favorite_border"} 
-         
+          {savedlike.includes(props.post.id) ? "favorite" : "favorite_border"}
         </span>
-      
       </button>
       <button>
         <span

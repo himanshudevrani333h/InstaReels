@@ -4,10 +4,14 @@ import { AuthContext } from "./AuthProvider";
 
 import { useContext, useState, useEffect } from "react";
 import VideoCard from "./VideoCard";
+
+
 import "./home.css";
-let Home = (props) => {
+
+let Home = () => {
   let value = useContext(AuthContext);
   let [posts, setPosts] = useState([]);
+ 
 
   useEffect(() => {
     let unsubscribeSnapshot;
@@ -17,10 +21,10 @@ let Home = (props) => {
         let arr = [];
 
         querySnapshot.forEach((docs) => {
-          // console.log(docs.id);
+         
           arr.push({ ...docs.data(), id: docs.id });
         });
-        console.log(arr);
+        
         setPosts(arr);
       });
 
@@ -30,39 +34,7 @@ let Home = (props) => {
     };
   }, []);
 
-
-  useEffect(()=>{
-    let observeConfig = {
-      root: null,
-      rootMargin: "0px",
-      threshold: [1],
-    };
-    const myobserver = new IntersectionObserver((elements)=>{
-
-     elements.forEach((el)=>{
-       console.log(el.target.paused);
-       console.log(el.intersectionRatio);
-       if( el.intersectionRatio !== 1 && !el.target.paused ){
-         console.log("not fuly display");
-        el.target.pause();
-       }else {
-        console.log(" fuly display");
-        console.log(el.target.play())
-         el.target.play();
-         el.target.loop = true;
-        // ispaused = false;
-       }
-     })
-    },observeConfig)
-
-    const videoEle = document.querySelectorAll("video");
-    // console.log(videoEle);
-      if(videoEle != null){
-    videoEle.forEach((el)=>{
-      myobserver.observe(el);
-    })
-  }
-  })
+  
  
   return (
     <div className="post_div">
@@ -84,14 +56,15 @@ let Home = (props) => {
           >
             info
           </span>
-
-          <div className="posts-container">
+         
+          <div className="posts-container" >
             <h1 className="tag">Reels</h1>
-            {console.log(posts)}
+           
             {posts.map((el, index) => {
-              return <VideoCard key={index} post={el} />;
+              return <VideoCard key={index} post={el}  />;
             })}
           </div>
+  
 
           <button
             className="logout-btn"
@@ -116,10 +89,11 @@ let Home = (props) => {
 
               //store the selected file so that we can upload it later on
               let file = e.target.files[0];
-              console.log(name);
+              
 
               size = size / Math.pow(10, 6);
-              console.log(size);
+             
+              
 
               //get file type
               type = type.split("/")[0];
@@ -145,7 +119,8 @@ let Home = (props) => {
                   //getDownloadURL method is used to generate the url, it gives a promise
                   let p = uploadtask.snapshot.ref.getDownloadURL();
                   p.then((url) => {
-                    console.log(url);
+                   
+                    
                     firestore.collection("posts").add({
                       username: value.displayName,
                       url: url,
@@ -154,7 +129,7 @@ let Home = (props) => {
                     });
                   });
 
-                  console.log(p);
+                
                 };
 
                 //using the firebase storage object we are getting reference of a file location
